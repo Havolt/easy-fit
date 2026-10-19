@@ -18,7 +18,10 @@ export function QuoteCarousel() {
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const timer = window.setInterval(() => setIndex((current) => (current + 1) % allQuotes.length), 9000);
+    const timer = window.setInterval(
+      () => setIndex((current) => (current + 1) % allQuotes.length),
+      9000,
+    );
     return () => window.clearInterval(timer);
   }, []);
 
@@ -29,13 +32,19 @@ export function QuoteCarousel() {
   return (
     <section className="quote-carousel" aria-label="Fitness and health inspiration">
       <div className="quote-content quote-transition" key={index} aria-live="polite">
-        <span className="quote-mark" aria-hidden="true">“</span>
+        <span className="quote-mark" aria-hidden="true">
+          “
+        </span>
         <blockquote>{quote.text}</blockquote>
         <cite>— {quote.author}</cite>
       </div>
       <div className="quote-controls">
-        <button type="button" onClick={() => moveBy(-1)} aria-label="Previous quote">←</button>
-        <button type="button" onClick={() => moveBy(1)} aria-label="Next quote">→</button>
+        <button type="button" onClick={() => moveBy(-1)} aria-label="Previous quote">
+          ←
+        </button>
+        <button type="button" onClick={() => moveBy(1)} aria-label="Next quote">
+          →
+        </button>
       </div>
     </section>
   );

@@ -83,6 +83,20 @@ npm run build
 
 The production output is generated in `dist/`.
 
+### Format source files
+
+Prettier is configured for TypeScript, TSX, CSS, JSON, Markdown, HTML, and YAML:
+
+```powershell
+npm run format
+```
+
+To check formatting without changing files:
+
+```powershell
+npm run format:check
+```
+
 ### Preview the production build
 
 ```powershell
