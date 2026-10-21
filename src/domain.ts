@@ -1,24 +1,22 @@
 import type { DailyEntry, ThemeMode } from './types';
+import { SCORING_CONFIG } from './scoringConfig';
 
 export const DEFAULT_TARGET = 2000;
-export const SWEET_SPOT_OFFSET = 100;
-export const CALORIE_FULL_SCORE_BUFFER = 100;
-export const MAX_EXERCISE_SCORE_MINUTES = 140;
 
 function calculateCalorieScoreRatio(calories: number, targetCalories: number): number {
-  const sweetSpot = Math.max(0, targetCalories - SWEET_SPOT_OFFSET);
-  const fullScoreStart = Math.max(0, sweetSpot - CALORIE_FULL_SCORE_BUFFER);
-  const distanceFromFullScoreRange =
-    calories < fullScoreStart
-      ? fullScoreStart - calories
-      : calories > sweetSpot
-        ? calories - sweetSpot
-        : 0;
+  const sweetSpot = Math.max(0, targetCalories - SCORING_CONFIG.sweetSpotOffset);
+  const fullScoreStart = Math.max(0, sweetSpot - SCORING_CONFIG.fullScoreBuffer);
+  const distanceBelowFullScoreRange = Math.max(0, fullScoreStart - calories);
+  const distanceAboveFullScoreRange = Math.max(0, calories - sweetSpot);
+  const distanceFromFullScoreRange = Math.max(
+    distanceBelowFullScoreRange,
+    distanceAboveFullScoreRange,
+  );
   return Math.max(0, 1 - distanceFromFullScoreRange / targetCalories);
 }
 
 function calculateExerciseScoreRatio(exerciseMinutes: number): number {
-  return Math.min(Math.sqrt(exerciseMinutes / MAX_EXERCISE_SCORE_MINUTES), 1);
+  return Math.min(Math.sqrt(exerciseMinutes / SCORING_CONFIG.maxExerciseScoreMinutes), 1);
 }
 
 export function calculateCalorieScore(calories: number, targetCalories: number): number {
@@ -30,7 +28,7 @@ export function calculateExerciseScore(exerciseMinutes: number): number {
 }
 
 export function calculateExerciseBonusMinutes(exerciseMinutes: number): number {
-  return Math.max(0, exerciseMinutes - MAX_EXERCISE_SCORE_MINUTES);
+  return Math.max(0, exerciseMinutes - SCORING_CONFIG.maxExerciseScoreMinutes);
 }
 
 export function calculateDietPower(
@@ -40,8 +38,8 @@ export function calculateDietPower(
 ): number {
   return Math.round(
     100 *
-      (0.7 * calculateCalorieScoreRatio(calories, targetCalories) +
-        0.3 * calculateExerciseScoreRatio(exerciseMinutes)),
+      (SCORING_CONFIG.calorieWeight * calculateCalorieScoreRatio(calories, targetCalories) +
+        SCORING_CONFIG.exerciseWeight * calculateExerciseScoreRatio(exerciseMinutes)),
   );
 }
 
