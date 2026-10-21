@@ -31,12 +31,20 @@ The score is a simple motivational heuristic, not a medical measurement.
 
 ### Calories
 
-The calorie sweet spot is approximately 100 calories below the daily target:
+The calorie sweet spot is approximately 100 calories below the daily target. A 100-calorie
+full-score buffer below that sweet spot avoids penalizing a modestly lower intake:
 
 ```text
 sweetSpot = max(0, targetCalories - 100)
-calorieScore = max(0, 1 - abs(calories - sweetSpot) / targetCalories)
+fullScoreStart = max(0, sweetSpot - 100)
+distanceFromFullScoreRange =
+  calories < fullScoreStart ? fullScoreStart - calories :
+  calories > sweetSpot ? calories - sweetSpot : 0
+calorieScore = max(0, 1 - distanceFromFullScoreRange / targetCalories)
 ```
+
+For example, with a 2,000-calorie target, 1,800–1,900 calories receives 100/100. The score
+gradually decreases below 1,800 or above 1,900.
 
 ### Exercise
 

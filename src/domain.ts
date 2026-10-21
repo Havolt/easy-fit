@@ -2,11 +2,19 @@ import type { DailyEntry, ThemeMode } from './types';
 
 export const DEFAULT_TARGET = 2000;
 export const SWEET_SPOT_OFFSET = 100;
+export const CALORIE_FULL_SCORE_BUFFER = 100;
 export const MAX_EXERCISE_SCORE_MINUTES = 140;
 
 function calculateCalorieScoreRatio(calories: number, targetCalories: number): number {
   const sweetSpot = Math.max(0, targetCalories - SWEET_SPOT_OFFSET);
-  return Math.max(0, 1 - Math.abs(calories - sweetSpot) / targetCalories);
+  const fullScoreStart = Math.max(0, sweetSpot - CALORIE_FULL_SCORE_BUFFER);
+  const distanceFromFullScoreRange =
+    calories < fullScoreStart
+      ? fullScoreStart - calories
+      : calories > sweetSpot
+        ? calories - sweetSpot
+        : 0;
+  return Math.max(0, 1 - distanceFromFullScoreRange / targetCalories);
 }
 
 function calculateExerciseScoreRatio(exerciseMinutes: number): number {
