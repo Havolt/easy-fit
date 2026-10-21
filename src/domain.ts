@@ -2,22 +2,39 @@ import type { DailyEntry, ThemeMode } from './types';
 
 export const DEFAULT_TARGET = 2000;
 export const SWEET_SPOT_OFFSET = 100;
+export const MAX_EXERCISE_SCORE_MINUTES = 140;
+
+function calculateCalorieScoreRatio(calories: number, targetCalories: number): number {
+  const sweetSpot = Math.max(0, targetCalories - SWEET_SPOT_OFFSET);
+  return Math.max(0, 1 - Math.abs(calories - sweetSpot) / targetCalories);
+}
+
+function calculateExerciseScoreRatio(exerciseMinutes: number): number {
+  return Math.min(Math.sqrt(exerciseMinutes / MAX_EXERCISE_SCORE_MINUTES), 1);
+}
+
+export function calculateCalorieScore(calories: number, targetCalories: number): number {
+  return Math.round(100 * calculateCalorieScoreRatio(calories, targetCalories));
+}
+
+export function calculateExerciseScore(exerciseMinutes: number): number {
+  return Math.round(100 * calculateExerciseScoreRatio(exerciseMinutes));
+}
+
+export function calculateExerciseBonusMinutes(exerciseMinutes: number): number {
+  return Math.max(0, exerciseMinutes - MAX_EXERCISE_SCORE_MINUTES);
+}
 
 export function calculateDietPower(
   calories: number,
   targetCalories: number,
   exerciseMinutes: number,
 ): number {
-  const sweetSpot = Math.max(0, targetCalories - SWEET_SPOT_OFFSET);
-  const calorieScore = Math.max(0, 1 - Math.abs(calories - sweetSpot) / targetCalories);
-  const effectiveExercise =
-    exerciseMinutes <= 60
-      ? exerciseMinutes
-      : exerciseMinutes <= 90
-        ? 60 + (exerciseMinutes - 60) * 0.5
-        : 75 + (exerciseMinutes - 90) * 0.25;
-  const exerciseScore = Math.min(effectiveExercise / 120, 1);
-  return Math.round(100 * (0.7 * calorieScore + 0.3 * exerciseScore));
+  return Math.round(
+    100 *
+      (0.7 * calculateCalorieScoreRatio(calories, targetCalories) +
+        0.3 * calculateExerciseScoreRatio(exerciseMinutes)),
+  );
 }
 
 export function validateEntry(calories: number, exerciseMinutes: number): string | null {

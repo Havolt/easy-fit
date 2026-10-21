@@ -12,6 +12,7 @@ It combines them into a motivating **diet power** score and shows progress in a 
 - Daily calorie and exercise check-ins
 - User-defined weight-loss calorie target
 - Diet power score from 0 to 100
+- Daily calorie and exercise component scores from 0 to 100
 - Line and bar chart views
 - Recent-day history with individual deletion
 - Delete-all-data option
@@ -39,15 +40,16 @@ calorieScore = max(0, 1 - abs(calories - sweetSpot) / targetCalories)
 
 ### Exercise
 
-Exercise continues to help with diminishing returns:
+Exercise uses a diminishing-returns curve that reaches the maximum exercise score at 140
+minutes:
 
 ```text
-0–60 minutes:   1x effect
-60–90 minutes:  0.5x effect after the first 60 minutes
-90+ minutes:    0.25x effect after the first 90 minutes
+exerciseScore = min(100, round(100 × √(exerciseMinutes / 140)))
 ```
 
-The combined score gives calories 70% of the weight and exercise 30%. The result is bounded from 0 to 100.
+Exercise after 140 minutes is shown as bonus time but does not increase the exercise score above 100. The combined score gives calories 70% of the weight and exercise 30%. The result is bounded
+from 0 to 100.
+The dashboard also shows the individual calorie and exercise scores for the selected day.
 
 The app shows gentle warnings for:
 

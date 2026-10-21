@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { clearAllData, deleteEntry, getSettings, listEntries, saveEntry, saveSettings } from './db';
 import {
+  calculateCalorieScore,
+  calculateExerciseBonusMinutes,
+  calculateExerciseScore,
   DEFAULT_TARGET,
   entryFromInput,
   formatDate,
@@ -220,6 +223,27 @@ export default function App() {
             {current ? 'This day is in the books.' : 'Log this day to get your score.'}
           </p>
         </div>
+        {current && (
+          <div className="score-breakdown" aria-label="Daily score breakdown">
+            <div className="component-score">
+              <span>Calories</span>
+              <strong>
+                {calculateCalorieScore(current.calories, current.targetCalories)}
+                <small>/100</small>
+              </strong>
+            </div>
+            <div className="component-score">
+              <span>Exercise</span>
+              <strong>
+                {calculateExerciseScore(current.exerciseMinutes)}
+                <small>/100</small>
+              </strong>
+              {calculateExerciseBonusMinutes(current.exerciseMinutes) > 0 && (
+                <em>+{calculateExerciseBonusMinutes(current.exerciseMinutes)} Bonus Bamboo</em>
+              )}
+            </div>
+          </div>
+        )}
         <div className="panda-message">
           <PandaMascot score={current?.dietPower ?? 0} hasData={Boolean(current)} />
           <p>

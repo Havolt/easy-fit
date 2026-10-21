@@ -205,6 +205,47 @@ input {
   letter-spacing: 0;
   color: #52715e;
 }
+.score-breakdown {
+  display: flex;
+  gap: 10px;
+  margin: 0 24px;
+}
+.component-score {
+  min-width: 108px;
+  padding: 12px 14px;
+  border: 1px solid #c9ddc5;
+  border-radius: 12px;
+  background: #f5fbf2;
+}
+.component-score span {
+  display: block;
+  color: #52715e;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.component-score strong {
+  display: block;
+  margin-top: 4px;
+  color: #245b42;
+  font-size: 1.7rem;
+  line-height: 1;
+}
+.component-score small {
+  margin-left: 2px;
+  color: #52715e;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+.component-score em {
+  display: block;
+  margin-top: 6px;
+  color: #c6533a;
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 800;
+}
 .muted {
   color: var(--muted, #6e6a61);
 }
@@ -651,6 +692,10 @@ footer {
 :root[data-theme='dark'] .hero {
   background: #1e392d;
 }
+:root[data-theme='dark'] .component-score {
+  border-color: #416346;
+  background: #263d2b;
+}
 .theme-control {
   display: flex;
   align-items: center;
@@ -701,6 +746,9 @@ footer {
     align-items: center;
     flex-wrap: wrap;
     gap: 12px;
+  }
+  .score-breakdown {
+    margin: 0;
   }
   .panda-message {
     display: flex;
